@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Part_1.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+    @using (Html.BeginForm())
+    {
+        <p>
+            Search by: @Html.DropDownList("searchBy", new SelectList(
+                      new List<Object>
+                      {
+                          new { value = "LastName", text = "Last Name" },
+                          new { value = "FirstName", text = "First Name" },
+                          new { value = "Department", text = "Department" },
+                          new { value = "Location", text = "Location" }
+                      },
+                      "value",
+                      "text",
+                      0))
+            <br /><br />
+            @Html.TextBox("searchTerm")
+            &nbsp;
+            <input type="submit" value="Search" />
+            <br /><br />
+        </p>
+    }
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("LastName", "Index", new { sortBy = "LastName" })
+        </th>
+        <th>
+            @Html.ActionLink("FirstName", "Index", new { sortBy = "FirstName" })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Salary)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Gender)
+        </th>
+        <th>
+            @Html.ActionLink("Department", "Index", new { sortBy = "Department" })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Location)
+        </th>
+        <th>
+            @Html.ActionLink("Performance", "Index", new { sortBy = "Performance" })
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Salary)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gender)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Department)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Location)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Performance)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.EmployeeId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.EmployeeId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.EmployeeId })
+        </td>
+    </tr>
+}
+
+</table>
