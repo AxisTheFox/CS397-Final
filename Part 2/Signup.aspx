@@ -23,7 +23,7 @@
             <asp:TextBox ID="confirmPasswordTextBox" runat="server"></asp:TextBox>
         </p>
         <p>
-            <asp:Button ID="signupButton" runat="server" Text="Signup" />
+            <asp:Button ID="signupButton" runat="server" Text="Signup" OnClick="signupButton_Click" />
         </p>
         <i>*Indicates a required field</i>
         <p>
