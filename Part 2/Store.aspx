@@ -24,7 +24,7 @@
             <asp:Button ID="addToCartButton" runat="server" Text="Add to Cart" OnClick="addToCartButton_Click" />
         </p>
         <p>
-            <asp:Button ID="checkoutButton" runat="server" Text="Checkout" OnClick="checkoutButton_Click" />
+            <asp:Button ID="checkoutButton" runat="server" Text="Checkout"  Visible="false" OnClick="checkoutButton_Click" />
         </p>
     </div>
     </form>

@@ -133,7 +133,72 @@ namespace Part_2
 
         protected void addToCartButton_Click(object sender, EventArgs e)
         {
-
+            int bookQuantity = Int32.Parse(quantityDropDownList.SelectedValue.ToString());
+            int userId = Int32.Parse(Session["userId"].ToString());
+            int bookId = Int32.Parse(booksDropDownList.SelectedValue.ToString());
+            ViewState["bookIds"] = ViewState["bookIds"].ToString() + bookId + ";";
+            ViewState["bookQuantities"] = ViewState["bookQuantities"].ToString() + bookQuantity + ";";
+            if ((bool)Session["isFirstBook"])
+            {
+                OleDbConnection cartsConnection = new OleDbConnection(ConfigurationManager.ConnectionStrings["bookstore"].ConnectionString);
+                string cartsQuery;
+                OleDbCommand cartsCommand;
+                if (!(bool)Session["userHasCart"])
+                {
+                    cartsQuery = "INSERT INTO Carts (UserId, BookIds, BookQuantities) VALUES (" + userId + ", '" + bookId + ";', '" + bookQuantity + ";')";
+                    cartsCommand = new OleDbCommand(cartsQuery, cartsConnection);
+                    cartsConnection.Open();
+                    cartsCommand.ExecuteNonQuery();
+                    cartsConnection.Close();
+                }
+                cartsQuery = "SELECT CartId FROM Carts WHERE UserId=@userId";
+                cartsCommand = new OleDbCommand(cartsQuery, cartsConnection);
+                cartsCommand.Parameters.AddWithValue("@userId", userId);
+                cartsConnection.Open();
+                OleDbDataReader cartsDataReader = cartsCommand.ExecuteReader();
+                while (cartsDataReader.Read())
+                {
+                    Session["cartId"] = cartsDataReader["CartId"].ToString();
+                }
+                cartsDataReader.Close();
+                cartsConnection.Close();
+                Session["isFirstBook"] = false;
+            }
+            else
+            {
+                OleDbConnection cartsDatabaseConnection = new OleDbConnection(ConfigurationManager.ConnectionStrings["bookstore"].ConnectionString);
+                string cartsDatabaseQuery = "UPDATE Carts SET BookIds=@bids, BookQuantities=@bq WHERE CartId=@cartId";
+                OleDbCommand cartsDatabaseCommand = new OleDbCommand(cartsDatabaseQuery, cartsDatabaseConnection);
+                cartsDatabaseCommand.Parameters.AddWithValue("@bids", ViewState["bookIds"].ToString());
+                cartsDatabaseCommand.Parameters.AddWithValue("@bq", ViewState["bookQuantities"].ToString());
+                cartsDatabaseCommand.Parameters.AddWithValue("@cartId", Session["cartId"].ToString());
+                cartsDatabaseConnection.Open();
+                cartsDatabaseCommand.ExecuteNonQuery();
+                cartsDatabaseConnection.Close();
+            }
+            booksDropDownList.Items.Clear();
+            quantityDropDownList.Items.Clear();
+            OleDbConnection booksDatabaseConnection = new OleDbConnection(ConfigurationManager.ConnectionStrings["bookstore"].ConnectionString);
+            string booksDatabaseQuery = "SELECT BookId, Title FROM Books";
+            OleDbCommand booksDatabaseCommand = new OleDbCommand(booksDatabaseQuery, booksDatabaseConnection);
+            booksDropDownList.Items.Add("");
+            string[] bookIdsInCart = ViewState["bookIds"].ToString().Split(';');
+            bookIdsInCart = bookIdsInCart.Take(bookIdsInCart.Count() - 1).ToArray();
+            string[] bookQuantitiesInCart = ViewState["bookQuantities"].ToString().Split(';');
+            bookQuantitiesInCart = bookQuantitiesInCart.Take(bookQuantitiesInCart.Count() - 1).ToArray();
+            booksDatabaseConnection.Open();
+            OleDbDataReader booksDataReader = booksDatabaseCommand.ExecuteReader();
+            while (booksDataReader.Read())
+            {
+                if (!bookIdsInCart.Contains(booksDataReader["BookId"].ToString()))
+                {
+                    ListItem bookListItem = new ListItem(booksDataReader["Title"].ToString(), booksDataReader["BookId"].ToString());
+                    booksDropDownList.Items.Add(bookListItem);
+                }
+            }
+            booksDataReader.Close();
+            booksDatabaseConnection.Close();
+            checkoutButton.Visible = true;
         }
 
         protected void checkoutButton_Click(object sender, EventArgs e)
