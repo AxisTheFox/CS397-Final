@@ -131,6 +131,13 @@ namespace Part_2
             databaseConnection.Close();
         }
 
+        protected void checkoutButton_Click(object sender, EventArgs e)
+        {
+            Session["bookQuantities"] = ViewState["bookQuantities"];
+            Session["bookIds"] = ViewState["bookIds"];
+            Response.Redirect("Confirmation.aspx");
+        }
+
         protected void addToCartButton_Click(object sender, EventArgs e)
         {
             int bookQuantity = Int32.Parse(quantityDropDownList.SelectedValue.ToString());
@@ -199,11 +206,6 @@ namespace Part_2
             booksDataReader.Close();
             booksDatabaseConnection.Close();
             checkoutButton.Visible = true;
-        }
-
-        protected void checkoutButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
