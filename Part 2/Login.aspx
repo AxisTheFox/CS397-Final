@@ -25,6 +25,9 @@
             New here?&nbsp;
             <asp:LinkButton ID="signUpLink" runat="server" Text="Sign up!" OnClick="signUpLink_Click" />
         </p>
+        <p>
+            <asp:Label ID="loginErrorLabel" runat="server" Text="" ForeColor="Red"></asp:Label>
+        </p>
     </div>
     </form>
 </body>

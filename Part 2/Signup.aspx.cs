@@ -16,7 +16,8 @@ namespace Part_2
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (Session["userId"] != null)
+                Response.Redirect("Store.aspx");
         }
 
         protected void signupButton_Click(object sender, EventArgs e)
